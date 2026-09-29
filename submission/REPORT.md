@@ -8,7 +8,7 @@
 - **MSSV:** 2A202602981
 - **Lớp:** K4-L3A
 - **Repository URL:** https://github.com/nhut-nam/K4-L3-DAY13-NguyenTranNhutNam-2A202602981-Monitoring-LLMOps
-- **Commit SHA cuối:** *(sẽ được cập nhật tự động sau commit)*
+- **Commit SHA cuối:** `7f3b37717d02e8f834fdb7a49e26be4a6023f792`
 - **Challenge ID:** `day13-k4-l3a-monitoring-llmops-v1`
 - **Tên project Langfuse cá nhân:** `day13-k4-l3a-2A202602981`
 
@@ -146,4 +146,4 @@
 - [x] Trace/prompt evidence thuộc project Langfuse cá nhân và ảnh không lộ key/secret.
 - [x] Repository chạy lại được theo README.
 - [x] Không có secret, API key, PII thô hoặc evidence của người khác/lớp khác.
-- [ ] URL repo và commit SHA cuối đã được nộp trên LMS/Codelabs.
+- [x] URL repo và commit SHA cuối đã được nộp trên LMS/Codelabs.
