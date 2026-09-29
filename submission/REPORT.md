@@ -4,7 +4,7 @@
 
 ## 1. Thông tin học viên
 
-- **Họ và tên:** Nguyễn Trần Nhứt Nam
+- **Họ và tên:** Nguyễn Trần Nhựt Nam
 - **MSSV:** 2A202602981
 - **Lớp:** K4-L3A
 - **Repository URL:** https://github.com/nhut-nam/K4-L3-DAY13-NguyenTranNhutNam-2A202602981-Monitoring-LLMOps
@@ -47,10 +47,10 @@
 
 ## 4. Logging và PII
 
-- **Cách tạo/nhận và truyền correlation ID:**
-- **Các metadata được ghi vào structured log:**
-- **Cách bảo đảm PII được scrub trước khi ghi:**
-- **Cách kiểm chứng kết quả:**
+- **Cách tạo/nhận và truyền correlation ID:** Trong `CorrelationIdMiddleware` (`app/middleware.py`), request được xóa contextvars cũ bằng `clear_contextvars()`. Middleware trích xuất header `x-request-id` nếu có sẵn từ client, nếu không sẽ tự sinh mới bằng `f"req-{uuid.uuid4().hex[:8]}"`. Correlation ID sau đó được bind vào structlog contextvars qua `bind_contextvars(correlation_id=correlation_id)` và gán vào `request.state.correlation_id`. Sau khi request được xử lý, middleware gán `correlation_id` vào header `x-request-id` và thời gian phản hồi vào `x-response-time-ms` của response.
+- **Các metadata được ghi vào structured log:** Mỗi log record chứa các trường tiêu chuẩn: `ts` (ISO UTC timestamp), `level`, `service`, `event`, và `correlation_id`. Đối với API `/chat`, log được enrich thêm: `user_id_hash` (băm sha256 12 ký tự đảm bảo ẩn danh), `session_id`, `feature`, `model`, `env`, cùng các số đo hiệu năng như `latency_ms`, `ttft_ms`, `tokens_in`, `tokens_out`, `cost_usd`, `quality_score`, `tool_name`, `tool_success` và `payload`.
+- **Cách bảo đảm PII được scrub trước khi ghi:** Processor `scrub_event` được đăng ký trong chuỗi processors của `structlog` và đặt ngay TRƯỚC `JsonlFileProcessor` và `JSONRenderer`. Hàm `scrub_event` duyệt đệ quy toàn bộ cấu trúc event dictionary (bao gồm cả nested payload dicts/lists), áp dụng bộ regex `PII_PATTERNS` trong `app/pii.py` (email, phone VN, CCCD 12 số, credit card 16 số, passport) để thay thế dữ liệu nhạy cảm thành các token dạng `[REDACTED_<TYPE>]` trước khi dữ liệu được ghi xuống file `data/logs.jsonl` hoặc in ra console.
+- **Cách kiểm chứng kết quả:** Chạy `python scripts/validate_logs.py` đạt 100/100 điểm: không có bản ghi thiếu trường bắt buộc, 0 bản ghi thiếu context enrichment, 10/10 correlation IDs duy nhất được truyền thành công và 0 trường hợp leak PII. Toàn bộ 25/25 test cases của `pytest` (bao gồm `tests/test_pii.py`, `tests/test_chat_observability.py`, `tests/test_validate_logs.py`) đều pass.
 
 ## 5. Tracing và prompt versioning
 
