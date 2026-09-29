@@ -65,10 +65,25 @@
 
 ## 6. Dashboard, SLO và alerts
 
-- **Dashboard và sáu panel:**
+- **Dashboard và sáu panel:** Dựng đúng 6 panel theo contract `config/dashboard.yaml`:
+  1. `latency`: Theo dõi độ trễ P50, P95, P99 và TTFT P95; đơn vị `ms`, threshold P95 $\le 3000\text{ms}$.
+  2. `traffic`: Số lượng request nhận được theo thời gian và request/phút; đơn vị `requests_per_minute`, threshold rate $\ge 1$.
+  3. `errors`: Tỷ lệ lỗi 5xx (`error_rate_pct`), phân loại lỗi theo `error_type` và tỷ lệ retrieval thành công (`tool_success_rate_pct`); đơn vị `percent`, threshold error rate $\le 2\%$.
+  4. `cost`: Chi phí ước tính tích lũy theo phút và tổng cửa sổ; đơn vị `usd`, threshold tổng chi phí $\le 2.5\text{ USD}$.
+  5. `tokens`: Tổng token đầu vào (`tokens_in`) và token đầu ra (`tokens_out`); đơn vị `tokens`, threshold $\le 50,000$.
+  6. `quality`: Điểm chất lượng trung bình của câu trả lời (`mean`); thang điểm 0-1, threshold $\ge 0.75$.
 - **SLO và lý do chọn:**
+  - Primary SLO: `fast_successful_requests` với mục tiêu **99.5%** trong cửa sổ 28 ngày.
+  - SLI: $\frac{\text{Số request trả về thành công có latency } \le 3000\text{ms}}{\text{Tổng số request nhận được}} \times 100\%$.
+  - Lý do chọn: Người dùng chatbot yêu cầu phản hồi nhanh dưới 3 giây để tương tác mượt mà và không bị gián đoạn bởi lỗi 5xx. Ngưỡng 3000ms tạo biên an toàn tốt so với baseline (~156ms).
 - **Cách tính error budget:**
+  - $\text{Error Budget} = 100\% - \text{SLO Target} = 100\% - 99.5\% = 0.5\%$.
+  - Với 100,000 requests trong chu kỳ 28 ngày, hệ thống chỉ được phép có tối đa $100,000 \times 0.5\% = 500$ requests bị lỗi hoặc chậm $> 3000\text{ms}$.
+  - Khi tỷ lệ lỗi/chậm tăng lên 5% trong 1 giờ, Burn Rate = 10x, toàn bộ ngân sách lỗi 28 ngày sẽ bị tiêu tán chỉ sau khoảng 2.8 ngày.
 - **Ba alert và runbook tương ứng:**
+  1. `high_latency_p95`: Severity warning, điều kiện `latency_ms_p95 > 3000ms` duy trì trong 5 phút. Runbook tại `docs/alerts.md#alert-1`.
+  2. `high_error_rate`: Severity critical, điều kiện `error_rate_pct > 2%` duy trì trong 3 phút. Runbook tại `docs/alerts.md#alert-2`.
+  3. `daily_cost_budget_exceeded`: Severity warning, điều kiện `total_cost_usd > 2.5` duy trì trong 10 phút. Runbook tại `docs/alerts.md#alert-3`.
 
 ## 7. Điều tra challenge
 
