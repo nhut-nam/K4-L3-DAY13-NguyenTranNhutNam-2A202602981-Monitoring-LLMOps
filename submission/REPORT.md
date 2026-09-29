@@ -4,13 +4,13 @@
 
 ## 1. Thông tin học viên
 
-- **Họ và tên:**
-- **MSSV:**
+- **Họ và tên:** Nguyễn Trần Nhứt Nam
+- **MSSV:** 2A202602981
 - **Lớp:** K4-L3A
-- **Repository URL:**
+- **Repository URL:** https://github.com/nhut-nam/K4-L3-DAY13-NguyenTranNhutNam-2A202602981-Monitoring-LLMOps
 - **Commit SHA cuối:**
 - **Challenge ID:**
-- **Tên project Langfuse cá nhân:** `day13-k4-l3a-<MSSV>`
+- **Tên project Langfuse cá nhân:** `day13-k4-l3a-2A202602981`
 
 ## 2. Evidence index
 
@@ -37,13 +37,13 @@
 
 | Nội dung | Baseline | Kết quả cuối | Nhận xét |
 |---|---|---|---|
-| `validate_logs.py` | | | |
-| `validate_dashboard.py` | | | |
-| `pytest` | | | |
-| Số traces hợp lệ | | | |
-| Số PII leak | | | |
-| Latency P95 / TTFT P95 | | | |
-| Retrieval success rate | | | |
+| `validate_logs.py` | 30/100 | | Thiếu correlation_id và context enrichment |
+| `validate_dashboard.py` | 6/6 panels | | Đạt cấu trúc schema chuẩn |
+| `pytest` | 22 passed | | Toàn bộ unit tests ban đầu passed |
+| Số traces hợp lệ | 0 | | Chưa cấu hình Langfuse credentials |
+| Số PII leak | 0 | | Chưa có request chứa PII vi phạm |
+| Latency P95 / TTFT P95 | 156.4ms / 0ms | | Đo lường tải baseline (10 requests) |
+| Retrieval success rate | 100% | | Môi trường chưa kích hoạt incident |
 
 ## 4. Logging và PII
 
